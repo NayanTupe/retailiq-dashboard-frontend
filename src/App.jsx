@@ -5,12 +5,14 @@ import Dashboard from "./pages/Dashboard";
 import Segments from "./pages/Segments";
 import ChurnAnalytics from "./pages/ChurnAnalytics";
 import Prediction from "./pages/Prediction";
+import { DashboardProvider } from "./context/DashboardContext";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <div style={{ display: "flex" }}>
-        <Sidebar />
+    <DashboardProvider>
+      <BrowserRouter>
+        <div style={{ display: "flex" }}>
+          <Sidebar />
 
         <div style={{
           marginLeft: 240,
@@ -26,7 +28,8 @@ export default function App() {
             <Route path="/prediction" element={<Prediction />} />
           </Routes>
         </div>
-      </div>
-    </BrowserRouter>
+        </div>
+      </BrowserRouter>
+    </DashboardProvider>
   );
 }

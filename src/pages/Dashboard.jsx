@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react";
+import { useDashboard } from "../context/useDashboard";
 import { motion } from "framer-motion";
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, AreaChart, Area
 } from "recharts";
 import { FiUsers, FiDollarSign, FiActivity, FiTrendingUp, FiGrid } from "react-icons/fi";
-import { getDashboardDetails } from "../api/dashboard";
 import KPICard from "../components/KPICard";
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error } = useDashboard();
 
-  useEffect(() => {
-    getDashboardDetails()
-      .then((res) => {
-        setData(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load details", err);
-        setError("Could not connect to FastAPI server. Please ensure backend is running.");
-        setLoading(false);
-      });
-  }, []);
 
   if (loading) {
     return (
@@ -54,19 +39,6 @@ export default function Dashboard() {
     );
   }
 
-  if (error) {
-    return (
-      <div style={{ padding: "40px 0", maxWidth: "600px", margin: "0 auto" }}>
-        <div className="glass-card" style={{ borderLeft: "4px solid var(--rose)", display: "flex", flexDirection: "column", gap: "16px" }}>
-          <h2 style={{ color: "var(--rose)", fontFamily: "var(--font-display)" }}>Connection Failed</h2>
-          <p>{error}</p>
-          <div style={{ padding: "12px", background: "rgba(244,63,94,0.05)", borderRadius: "10px", fontSize: "14px", border: "1px dashed rgba(244,63,94,0.15)" }}>
-            <code>$ uvicorn api.main:app --reload</code> in the backend repository folder.
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const { summary, revenue_by_city, membership_mix, age_distribution } = data;
 
@@ -84,6 +56,23 @@ export default function Dashboard() {
 
   return (
     <div className="main-content">
+      {error === "demo" && (
+        <div style={{
+          background: "linear-gradient(90deg, rgba(245,158,11,0.1) 0%, rgba(245,158,11,0.03) 100%)",
+          border: "1px solid rgba(245,158,11,0.2)",
+          borderRadius: "12px",
+          padding: "10px 20px",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          fontSize: "13px",
+          color: "var(--amber)"
+        }}>
+          <span style={{ fontSize: "16px" }}>⚡</span>
+          <span><strong>Demo Mode</strong> — Displaying sample analytics data. Live API backend is waking up.</span>
+        </div>
+      )}
       {/* 3D Glass Hero Banner */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}

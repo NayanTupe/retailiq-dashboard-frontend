@@ -1,5 +1,28 @@
 # 🚀 RetailIQ — AI SaaS Analytics Dashboard (Frontend)
 
+## Local setup (works on any device)
+
+Prerequisites: Git and Node.js 20.19 or newer.
+
+```bash
+git clone https://github.com/NayanTupe/retailiq-dashboard-frontend.git
+cd retailiq-dashboard-frontend
+npm ci
+cp .env.example .env
+npm run dev
+```
+
+Set `VITE_API_BASE_URL` in `.env` to the backend URL you want to use. For the
+deployed frontend, add the same variable in Vercel. Never commit `.env`; only
+`.env.example` belongs in Git.
+
+Before pushing changes, run:
+
+```bash
+npm run lint
+npm run build
+```
+
 ![React](https://img.shields.io/badge/React-Frontend-blue)
 ![Vite](https://img.shields.io/badge/Vite-Tooling-purple)
 ![Status](https://img.shields.io/badge/Project-Production%20UI-brightgreen)

@@ -1,5 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://retailiq-ecommerce-ml-backend.onrender.com",
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://retailiq-ecommerce-ml-backend.onrender.com",
 });

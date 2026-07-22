@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTarget, FiUser, FiAlertTriangle, FiCheckCircle, FiChevronRight } from "react-icons/fi";
 import { api } from "../api/client";
+import { localChurnPredict } from "../api/fallbackData";
 
 export default function Prediction() {
   const [form, setForm] = useState({
@@ -17,6 +18,7 @@ export default function Prediction() {
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState(null);
   const [error, setError] = useState(null);
+  const [isDemo, setIsDemo] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,8 +47,15 @@ export default function Prediction() {
       const response = await api.post("/predict/churn", payload);
       setRes(response.data);
     } catch (err) {
-      console.error(err);
-      setError("Model prediction failed. Please ensure the FastAPI server is running.");
+      console.error("API prediction failed, using local model", err);
+      const localResult = localChurnPredict({
+        age: Number(form.age),
+        total_spend: Number(form.total_spend),
+        items_purchased: Number(form.items_purchased),
+        average_rating: Number(form.average_rating)
+      });
+      setRes(localResult);
+      setIsDemo(true);
     } finally {
       setLoading(false);
     }
@@ -100,6 +109,23 @@ export default function Prediction() {
 
   return (
     <div className="main-content">
+      {isDemo && (
+        <div style={{
+          background: "linear-gradient(90deg, rgba(245,158,11,0.1) 0%, rgba(245,158,11,0.03) 100%)",
+          border: "1px solid rgba(245,158,11,0.2)",
+          borderRadius: "12px",
+          padding: "10px 20px",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          fontSize: "13px",
+          color: "var(--amber)"
+        }}>
+          <span style={{ fontSize: "16px" }}>⚡</span>
+          <span><strong>Demo Mode</strong> — Using local heuristic prediction. Live ML model API is waking up.</span>
+        </div>
+      )}
       {/* Header Banner */}
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
